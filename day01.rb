@@ -7,6 +7,8 @@ end
 
 puts "Result 1: #{result1}"
 
+# ======================================================================
+
 result2 = inputs.sum do |i, _|
   i * transposed_inputs[1].count(i)
 end
