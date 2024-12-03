@@ -1,21 +1,24 @@
-inputs = File.read('inputs/day03.txt')
+require_relative 'advent_of_code_2024'
 
-result1 = inputs.scan(/mul\(\d{1,3},\d{1,3}\)/).sum do |match|
-  match.scan(/\d+/).map(&:to_i).reduce(:*)
+input = File.read('inputs/day03.txt')
+
+AdventOfCode2024.run(3, 1) do
+  input.scan(/mul\(\d{1,3},\d{1,3}\)/).sum do |match|
+    match.scan(/\d+/).map(&:to_i).reduce(:*)
+  end
 end
-
-puts "Result 1: #{result1}"
 
 # ======================================================================
 
-skip = false
-result2 = inputs.scan(/mul\(\d{1,3},\d{1,3}\)|don't\(\)|do\(\)/).map do |match|
-  skip = true if match == "don't()"
-  skip = false if match == 'do()'
+AdventOfCode2024.run(3, 2) do
+  skip = false
 
-  next if skip
+  input.scan(/mul\(\d{1,3},\d{1,3}\)|don't\(\)|do\(\)/).map do |match|
+    skip = true if match == "don't()"
+    skip = false if match == 'do()'
 
-  match.scan(/\d+/).map(&:to_i).reduce(:*)
-end.compact.sum
+    next if skip
 
-puts "Result 2: #{result2}"
+    match.scan(/\d+/).map(&:to_i).reduce(:*)
+  end.compact.sum
+end

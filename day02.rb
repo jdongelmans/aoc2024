@@ -1,3 +1,5 @@
+require_relative 'advent_of_code_2024'
+
 inputs = File.readlines('inputs/day02.txt').map { |line| line.split(' ').map(&:to_i) }
 
 def safe?(line)
@@ -7,17 +9,18 @@ def safe?(line)
   diffs.map(&:abs).min >= 1 && diffs.map(&:abs).max <= 3
 end
 
-result1 = inputs.count { |line| safe?(line) }
-puts "Result 1: #{result1}"
+AdventOfCode2024.run(2, 1) do
+  inputs.count { |line| safe?(line) }
+end
 
 # ======================================================================
 
-result2 = inputs.count do |line|
-  safe?(line) || 0.upto(line.length - 1).any? do |i|
-    dup = line.dup
-    dup.delete_at(i)
-    safe?(dup)
+AdventOfCode2024.run(2, 2) do
+  inputs.count do |line|
+    safe?(line) || 0.upto(line.length - 1).any? do |i|
+      dup = line.dup
+      dup.delete_at(i)
+      safe?(dup)
+    end
   end
 end
-
-puts "Result 2: #{result2}"
