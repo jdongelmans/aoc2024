@@ -1,43 +1,40 @@
 require_relative 'advent_of_code_2024'
 
-inputs = File.readlines('inputs/day07.txt')
-input = inputs.map do |line|
+input = File.readlines('inputs/day07.txt').map do |line|
   result, numbers = line.split(':')
   [result.to_i, numbers.split.map(&:to_i)]
 end
 
-POSSIBLE_OPERATORS_PART1 = %i[+ *].freeze
+class Integer
+  def concat(other_value)
+    multiplier = other_value.to_s.size
+    self * multiplier + other_value
+  end
+end
+
+def result_possible?(result, numbers, include_concatenation: false)
+  possible_operators = %i[+ *]
+  possible_operators << :concat if include_concatenation
+
+  possible_operators.repeated_permutation(numbers.size - 1).any? do |operators|
+    total = numbers[0]
+
+    (numbers.size - 1).times { |i| total = total.send(operators[i], numbers[i + 1]) }
+
+    total == result
+  end
+end
 
 AdventOfCode2024.run(7, 1) do
-  input.map do |result, numbers|
-    result if POSSIBLE_OPERATORS_PART1.repeated_permutation(numbers.size - 1).any? do |operators|
-      total = numbers[0]
-      (numbers.size - 1).times do |i|
-        total = total.send(operators[i], numbers[i + 1])
-      end
-
-      total == result
-    end
-  end.compact.sum
+  input.sum do |result, numbers|
+    result_possible?(result, numbers) ? result : 0
+  end
 end
 
 # ======================================================================
 
-POSSIBLE_OPERATORS_PART2 = %w[+ * ||].freeze
-
 AdventOfCode2024.run(7, 2) do
-  input.map do |result, numbers|
-    result if POSSIBLE_OPERATORS_PART2.repeated_permutation(numbers.size - 1).any? do |operators|
-      total = numbers[0]
-      (numbers.size - 1).times do |i|
-        total = if operators[i] == '||'
-                  [total, numbers[i + 1]].join.to_i
-                else
-                  total.send(operators[i].to_sym, numbers[i + 1])
-                end
-      end
-
-      total == result
-    end
-  end.compact.sum
+  input.sum do |result, numbers|
+    result_possible?(result, numbers, include_concatenation: true) ? result : 0
+  end
 end
