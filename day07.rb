@@ -7,7 +7,7 @@ end
 
 class Integer
   def concat(other_value)
-    multiplier = other_value.to_s.size
+    multiplier = 10**other_value.to_s.size
     self * multiplier + other_value
   end
 end
